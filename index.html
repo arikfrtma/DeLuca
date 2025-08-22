@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jual Nomor Kosong - Nokos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#4F46E5",
+            secondary: "#6B7280",
+            dark: "#1F2937"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <div class="max-w-4xl mx-auto p-4">
+    <h1 class="text-3xl font-bold text-center mb-4">Jual Nomor Kosong</h1>
+
+    <!-- LOGIN -->
+    <div id="loginSection" class="bg-white p-4 rounded-lg shadow mb-4">
+      <h2 class="text-xl font-semibold mb-2">Login Akun</h2>
+      <input type="email" id="email" placeholder="Email" class="w-full p-2 mb-2 border rounded" />
+      <input type="password" id="password" placeholder="Sandi" class="w-full p-2 mb-2 border rounded" />
+      <button onclick="login()" class="bg-primary text-white px-4 py-2 rounded w-full">Login</button>
+      <p class="text-sm text-center mt-2">Belum punya akun? <a href="#" onclick="toggleRegister()">Daftar di sini</a></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerSection" class="bg-white p-4 rounded-lg shadow mb-4 hidden">
+      <h2 class="text-xl font-semibold mb-2">Daftar Akun</h2>
+      <input type="email" id="regEmail" placeholder="Email" class="w-full p-2 mb-2 border rounded" />
+      <input type="password" id="regPassword" placeholder="Sandi" class="w-full p-2 mb-2 border rounded" />
+      <button onclick="register()" class="bg-primary text-white px-4 py-2 rounded w-full">Daftar</button>
+      <p class="text-sm text-center mt-2">Sudah punya akun? <a href="#" onclick="toggleLogin()">Login di sini</a></p>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden">
+      <div class="bg-white p-4 rounded-lg shadow mb-4 flex justify-between items-center">
+        <div>
+          <p class="text-lg font-semibold">Selamat datang, <span id="username"></span></p>
+          <p>Saldo: <span id="saldo" class="font-bold text-green-600">Rp0</span></p>
+        </div>
+        <button onclick="logout()" class="text-red-600 font-semibold">Keluar</button>
+      </div>
+
+      <!-- DEPOSIT -->
+      <div class="bg-white p-4 rounded-lg shadow mb-4">
+        <h2 class="text-xl font-semibold mb-2">Deposit Saldo</h2>
+        <input type="number" id="depositJumlah" placeholder="Masukkan jumlah" class="w-full p-2 mb-2 border rounded" />
+        <button onclick="deposit()" class="bg-primary text-white px-4 py-2 rounded w-full">Saya Sudah Bayar</button>
+        <p class="text-sm text-gray-500 mt-2">Setelah klik, admin akan verifikasi sebelum saldo masuk.</p>
+      </div>
+
+      <!-- PRODUK NOKOS -->
+      <div class="bg-white p-4 rounded-lg shadow mb-4">
+        <h2 class="text-xl font-semibold mb-2">Pilih Nomor Kosong</h2>
+        <select id="aplikasi" class="w-full p-2 mb-2 border rounded">
+          <option value="Telegram">Telegram</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Gmail">Gmail</option>
+        </select>
+        <select id="negara" class="w-full p-2 mb-2 border rounded">
+          <option value="Indonesia">🇮🇩 Indonesia</option>
+          <option value="USA">🇺🇸 USA</option>
+          <option value="India">🇮🇳 India</option>
+        </select>
+        <button onclick="beliNokos()" class="bg-green-600 text-white px-4 py-2 rounded w-full">Beli Sekarang</button>
+      </div>
+
+      <!-- RIWAYAT -->
+      <div class="bg-white p-4 rounded-lg shadow mb-4">
+        <h2 class="text-xl font-semibold mb-2">Riwayat Pembelian</h2>
+        <ul id="riwayat" class="text-sm space-y-2">
+          <li class="text-gray-400">Belum ada pembelian</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let userData = JSON.parse(localStorage.getItem("users") || "{}");
+  let currentUser = null;
+
+  function toggleRegister() {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("registerSection").classList.remove("hidden");
+  }
+
+  function toggleLogin() {
+    document.getElementById("registerSection").classList.add("hidden");
+    document.getElementById("loginSection").classList.remove("hidden");
+  }
+
+  function register() {
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+    if (userData[email]) {
+      alert("Email sudah terdaftar!");
+      return;
+    }
+    userData[email] = { password, saldo: 0, riwayat: [] };
+    localStorage.setItem("users", JSON.stringify(userData));
+    alert("Pendaftaran berhasil, silakan login.");
+    toggleLogin();
+  }
+
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    if (userData[email] && userData[email].password === password) {
+      currentUser = email;
+      loadDashboard();
+    } else {
+      alert("Login gagal!");
+    }
+  }
+
+  function loadDashboard() {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("registerSection").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    document.getElementById("username").innerText = currentUser;
+    updateSaldo();
+    updateRiwayat();
+  }
+
+  function logout() {
+    currentUser = null;
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("loginSection").classList.remove("hidden");
+  }
+
+  function updateSaldo() {
+    const saldo = userData[currentUser].saldo || 0;
+    document.getElementById("saldo").innerText = `Rp${saldo}`;
+  }
+
+  function updateRiwayat() {
+    const riwayat = userData[currentUser].riwayat || [];
+    const riwayatEl = document.getElementById("riwayat");
+    riwayatEl.innerHTML = "";
+    if (riwayat.length === 0) {
+      riwayatEl.innerHTML = "<li class='text-gray-400'>Belum ada pembelian</li>";
+    } else {
+      riwayat.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `✅ ${item.aplikasi} - ${item.negara} <button onclick="batal('${item.id}')" class="text-red-600 ml-2">Batal</button>`;
+        riwayatEl.appendChild(li);
+      });
+    }
+  }
+
+  function deposit() {
+    const jumlah = parseInt(document.getElementById("depositJumlah").value);
+    if (!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
+
+    axios.post("https://api.telegram.org/bot8145016736:AAF7ha11Os8Ty9b8iDelY7gf220qJmG4X5w/sendMessage", {
+      chat_id: "6340840058",
+      text: `🧾 *Konfirmasi Deposit*
+👤: ${currentUser}
+💰 Jumlah: Rp${jumlah}
+⏳ Status: Menunggu konfirmasi`,
+      parse_mode: "Markdown"
+    });
+
+    alert("Permintaan deposit dikirim. Tunggu konfirmasi admin.");
+  }
+
+  function beliNokos() {
+    const aplikasi = document.getElementById("aplikasi").value;
+    const negara = document.getElementById("negara").value;
+    const harga = 5000; // bisa dibuat dinamis
+
+    if (userData[currentUser].saldo < harga) {
+      alert("Saldo tidak cukup. Silakan deposit.");
+      return;
+    }
+
+    const id = Date.now().toString();
+    userData[currentUser].saldo -= harga;
+    userData[currentUser].riwayat.push({ id, aplikasi, negara });
+    localStorage.setItem("users", JSON.stringify(userData));
+    updateSaldo();
+    updateRiwayat();
+    alert(`Nomor ${aplikasi} dari ${negara} berhasil dibeli!`);
+  }
+
+  function batal(id) {
+    const index = userData[currentUser].riwayat.findIndex(item => item.id === id);
+    if (index !== -1) {
+      userData[currentUser].saldo += 5000; // harga tetap
+      userData[currentUser].riwayat.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(userData));
+      updateSaldo();
+      updateRiwayat();
+      alert("Pembelian dibatalkan, saldo dikembalikan.");
+    }
+  }
+</script>
+</body>
+</html>
