@@ -1,211 +1,282 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jual Nomor Kosong - Nokos</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: "#4F46E5",
-            secondary: "#6B7280",
-            dark: "#1F2937"
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAYMENT BY RIEXX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-      }
-    };
-  </script>
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .payment-container {
+            padding: 30px;
+        }
+
+        .payment-method {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-5px);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: #4776E6;
+        }
+
+        .method-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .method-details {
+            padding-left: 65px;
+        }
+
+        .method-info {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .copy-btn {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .qris-section {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .qris-placeholder {
+            width: 200px;
+            height: 200px;
+            background: #ddd;
+            margin: 15px auto;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .instruction {
+            text-align: center;
+            background: #ffefd5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 4px solid #ffa500;
+        }
+
+        .whatsapp-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #25D366, #128C7E);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .method-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .method-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .method-details {
+                padding-left: 0;
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans">
-  <div class="max-w-4xl mx-auto p-4">
-    <h1 class="text-3xl font-bold text-center mb-4">Jual Nomor Kosong</h1>
-
-    <!-- LOGIN -->
-    <div id="loginSection" class="bg-white p-4 rounded-lg shadow mb-4">
-      <h2 class="text-xl font-semibold mb-2">Login Akun</h2>
-      <input type="email" id="email" placeholder="Email" class="w-full p-2 mb-2 border rounded" />
-      <input type="password" id="password" placeholder="Sandi" class="w-full p-2 mb-2 border rounded" />
-      <button onclick="login()" class="bg-primary text-white px-4 py-2 rounded w-full">Login</button>
-      <p class="text-sm text-center mt-2">Belum punya akun? <a href="#" onclick="toggleRegister()">Daftar di sini</a></p>
-    </div>
-
-    <!-- REGISTER -->
-    <div id="registerSection" class="bg-white p-4 rounded-lg shadow mb-4 hidden">
-      <h2 class="text-xl font-semibold mb-2">Daftar Akun</h2>
-      <input type="email" id="regEmail" placeholder="Email" class="w-full p-2 mb-2 border rounded" />
-      <input type="password" id="regPassword" placeholder="Sandi" class="w-full p-2 mb-2 border rounded" />
-      <button onclick="register()" class="bg-primary text-white px-4 py-2 rounded w-full">Daftar</button>
-      <p class="text-sm text-center mt-2">Sudah punya akun? <a href="#" onclick="toggleLogin()">Login di sini</a></p>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden">
-      <div class="bg-white p-4 rounded-lg shadow mb-4 flex justify-between items-center">
-        <div>
-          <p class="text-lg font-semibold">Selamat datang, <span id="username"></span></p>
-          <p>Saldo: <span id="saldo" class="font-bold text-green-600">Rp5000</span></p>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PAYMENT BY RIEXX</h1>
+            <p>Silakan pilih metode pembayaran yang Anda inginkan</p>
         </div>
-        <button onclick="logout()" class="text-red-600 font-semibold">Keluar</button>
-      </div>
 
-      <!-- DEPOSIT -->
-      <div class="bg-white p-4 rounded-lg shadow mb-4">
-        <h2 class="text-xl font-semibold mb-2">Deposit Saldo</h2>
-        <input type="number" id="depositJumlah" placeholder="Masukkan jumlah" class="w-full p-2 mb-2 border rounded" />
-        <button onclick="deposit()" class="bg-primary text-white px-4 py-2 rounded w-full">Saya Sudah Bayar</button>
-        <p class="text-sm text-gray-500 mt-2">Setelah klik, admin akan verifikasi sebelum saldo masuk.</p>
-      </div>
+        <div class="payment-container">
+            <div class="payment-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="method-title">DANA</h3>
+                </div>
+                <div class="method-details">
+                    <p class="method-info"><strong>Nomor:</strong> 08xxx</p>
+                    <p class="method-info"><strong>A/N:</strong> Name</p>
+                    <button class="copy-btn" onclick="copyToClipboard('08xxx')">Salin Nomor</button>
+                </div>
+            </div>
 
-      <!-- PRODUK NOKOS -->
-      <div class="bg-white p-4 rounded-lg shadow mb-4">
-        <h2 class="text-xl font-semibold mb-2">Pilih Nomor Kosong</h2>
-        <select id="aplikasi" class="w-full p-2 mb-2 border rounded">
-          <option value="Telegram">Telegram</option>
-          <option value="WhatsApp">WhatsApp</option>
-          <option value="Gmail">Gmail</option>
-        </select>
-        <select id="negara" class="w-full p-2 mb-2 border rounded">
-          <option value="Indonesia">🇮🇩 Indonesia</option>
-          <option value="USA">🇺🇸 USA</option>
-          <option value="India">🇮🇳 India</option>
-        </select>
-        <button onclick="beliNokos()" class="bg-green-600 text-white px-4 py-2 rounded w-full">Beli Sekarang</button>
-      </div>
+            <div class="payment-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="method-title">OVO</h3>
+                </div>
+                <div class="method-details">
+                    <p class="method-info"><strong>Nomor:</strong> 08xxx</p>
+                    <p class="method-info"><strong>A/N:</strong> Name</p>
+                    <button class="copy-btn" onclick="copyToClipboard('08xxx')">Salin Nomor</button>
+                </div>
+            </div>
 
-      <!-- RIWAYAT -->
-      <div class="bg-white p-4 rounded-lg shadow mb-4">
-        <h2 class="text-xl font-semibold mb-2">Riwayat Pembelian</h2>
-        <ul id="riwayat" class="text-sm space-y-2">
-          <li class="text-gray-400">Belum ada pembelian</li>
-        </ul>
-      </div>
+            <div class="payment-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="fab fa-google-wallet"></i>
+                    </div>
+                    <h3 class="method-title">GOPAY</h3>
+                </div>
+                <div class="method-details">
+                    <p class="method-info"><strong>Nomor:</strong> 08xxx</p>
+                    <p class="method-info"><strong>A/N:</strong> Name</p>
+                    <button class="copy-btn" onclick="copyToClipboard('08xxx')">Salin Nomor</button>
+                </div>
+            </div>
+
+            <div class="qris-section">
+                <h3>QRIS</h3>
+                <div class="qris-placeholder">
+                    Scan QR Code di sini
+                </div>
+                <p>Gunakan aplikasi pembayaran Anda untuk scan QRIS di atas</p>
+            </div>
+
+            <div class="instruction">
+                <p><strong>Instruksi:</strong> Setelah melakukan pembayaran, silakan kirim screenshot bukti transfer melalui tombol di bawah ini.</p>
+            </div>
+
+            <a href="https://wa.me/6283898472764" class="whatsapp-btn" target="_blank">
+                <i class="fab fa-whatsapp"></i> Kirim Bukti Pembayaran via WhatsApp
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 PAYMENT BY RIEXX. All rights reserved.</p>
+        </div>
     </div>
-  </div>
 
-<script>
-  let userData = JSON.parse(localStorage.getItem("users") || "{}");
-  let currentUser = null;
-
-  function toggleRegister() {
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("registerSection").classList.remove("hidden");
-  }
-
-  function toggleLogin() {
-    document.getElementById("registerSection").classList.add("hidden");
-    document.getElementById("loginSection").classList.remove("hidden");
-  }
-
-  function register() {
-    const email = document.getElementById("regEmail").value;
-    const password = document.getElementById("regPassword").value;
-    if (userData[email]) {
-      alert("Email sudah terdaftar!");
-      return;
-    }
-    userData[email] = { password, saldo: 0, riwayat: [] };
-    localStorage.setItem("users", JSON.stringify(userData));
-    alert("Pendaftaran berhasil, silakan login.");
-    toggleLogin();
-  }
-
-  function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    if (userData[email] && userData[email].password === password) {
-      currentUser = email;
-      loadDashboard();
-    } else {
-      alert("Login gagal!");
-    }
-  }
-
-  function loadDashboard() {
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("registerSection").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    document.getElementById("username").innerText = currentUser;
-    updateSaldo();
-    updateRiwayat();
-  }
-
-  function logout() {
-    currentUser = null;
-    document.getElementById("dashboard").classList.add("hidden");
-    document.getElementById("loginSection").classList.remove("hidden");
-  }
-
-  function updateSaldo() {
-    const saldo = userData[currentUser].saldo || 0;
-    document.getElementById("saldo").innerText = `Rp${saldo}`;
-  }
-
-  function updateRiwayat() {
-    const riwayat = userData[currentUser].riwayat || [];
-    const riwayatEl = document.getElementById("riwayat");
-    riwayatEl.innerHTML = "";
-    if (riwayat.length === 0) {
-      riwayatEl.innerHTML = "<li class='text-gray-400'>Belum ada pembelian</li>";
-    } else {
-      riwayat.forEach(item => {
-        const li = document.createElement("li");
-        li.innerHTML = `✅ ${item.aplikasi} - ${item.negara} <button onclick="batal('${item.id}')" class="text-red-600 ml-2">Batal</button>`;
-        riwayatEl.appendChild(li);
-      });
-    }
-  }
-
-  function deposit() {
-    const jumlah = parseInt(document.getElementById("depositJumlah").value);
-    if (!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
-
-    axios.post("https://api.telegram.org/bot8145016736:AAF7ha11Os8Ty9b8iDelY7gf220qJmG4X5w/sendMessage", {
-      chat_id: "6340840058",
-      text: `🧾 *Konfirmasi Deposit*
-👤: ${currentUser}
-💰 Jumlah: Rp${jumlah}
-⏳ Status: Menunggu konfirmasi`,
-      parse_mode: "Markdown"
-    });
-
-    alert("Permintaan deposit dikirim. Tunggu konfirmasi admin.");
-  }
-
-  function beliNokos() {
-    const aplikasi = document.getElementById("aplikasi").value;
-    const negara = document.getElementById("negara").value;
-    const harga = 5000; // bisa dibuat dinamis
-
-    if (userData[currentUser].saldo < harga) {
-      alert("Saldo tidak cukup. Silakan deposit.");
-      return;
-    }
-
-    const id = Date.now().toString();
-    userData[currentUser].saldo -= harga;
-    userData[currentUser].riwayat.push({ id, aplikasi, negara });
-    localStorage.setItem("users", JSON.stringify(userData));
-    updateSaldo();
-    updateRiwayat();
-    alert(`Nomor ${aplikasi} dari ${negara} berhasil dibeli!`);
-  }
-
-  function batal(id) {
-    const index = userData[currentUser].riwayat.findIndex(item => item.id === id);
-    if (index !== -1) {
-      userData[currentUser].saldo += 5000; // harga tetap
-      userData[currentUser].riwayat.splice(index, 1);
-      localStorage.setItem("users", JSON.stringify(userData));
-      updateSaldo();
-      updateRiwayat();
-      alert("Pembelian dibatalkan, saldo dikembalikan.");
-    }
-  }
-</script>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Teks berhasil disalin: ' + text);
+            }).catch(err => {
+                console.error('Gagal menyalin teks: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
