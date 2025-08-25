@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabungan Riexx</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .balance-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-income {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-expense {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .history {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .history h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .transaction-list {
+            list-style: none;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .transaction-date {
+            font-size: 0.8rem;
+            color: #95a5a6;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .income {
+            color: #2ecc71;
+        }
+
+        .expense {
+            color: #e74c3c;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 0;
+            color: #95a5a6;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tabungan Riexx</h1>
+            <p>Kelola keuangan Anda dengan mudah dan efisien</p>
+        </header>
+
+        <div class="balance-card">
+            <h2>Total Saldo</h2>
+            <div class="balance-amount" id="balance">Rp 0</div>
+            <p>Update terakhir: <span id="last-update">-</span></p>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-income" id="income-btn">
+                <i class="fas fa-plus-circle"></i> Pemasukan
+            </button>
+            <button class="btn btn-expense" id="expense-btn">
+                <i class="fas fa-minus-circle"></i> Pengeluaran
+            </button>
+        </div>
+
+        <div class="history">
+            <h2>Riwayat Transaksi</h2>
+            <ul class="transaction-list" id="transaction-list">
+                <li class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <p>Belum ada transaksi</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal untuk Pemasukan -->
+    <div class="modal" id="income-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Pemasukan</h2>
+                <span class="close" id="close-income">&times;</span>
+            </div>
+            <form id="income-form">
+                <div class="form-group">
+                    <label for="income-amount">Jumlah Pemasukan (Rp)</label>
+                    <input type="number" id="income-amount" placeholder="Masukkan jumlah" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="income-description">Keterangan (Opsional)</label>
+                    <textarea id="income-description" placeholder="Deskripsi pemasukan"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Simpan Pemasukan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal untuk Pengeluaran -->
+    <div class="modal" id="expense-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Pengeluaran</h2>
+                <span class="close" id="close-expense">&times;</span>
+            </div>
+            <form id="expense-form">
+                <div class="form-group">
+                    <label for="expense-amount">Jumlah Pengeluaran (Rp)</label>
+                    <input type="number" id="expense-amount" placeholder="Masukkan jumlah" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="expense-description">Keterangan (Opsional)</label>
+                    <textarea id="expense-description" placeholder="Deskripsi pengeluaran"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Simpan Pengeluaran</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data aplikasi
+        let balance = 0;
+        let transactions = [];
+        
+        // Elemen DOM
+        const balanceElement = document.getElementById('balance');
+        const transactionList = document.getElementById('transaction-list');
+        const lastUpdateElement = document.getElementById('last-update');
+        
+        const incomeBtn = document.getElementById('income-btn');
+        const expenseBtn = document.getElementById('expense-btn');
+        
+        const incomeModal = document.getElementById('income-modal');
+        const expenseModal = document.getElementById('expense-modal');
+        
+        const closeIncome = document.getElementById('close-income');
+        const closeExpense = document.getElementById('close-expense');
+        
+        const incomeForm = document.getElementById('income-form');
+        const expenseForm = document.getElementById('expense-form');
+        
+        // Format angka ke Rupiah
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        // Format tanggal
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+        
+        // Update tampilan saldo
+        function updateBalance() {
+            balanceElement.textContent = formatRupiah(balance);
+            lastUpdateElement.textContent = formatDate(new Date());
+        }
+        
+        // Tampilkan transaksi
+        function renderTransactions() {
+            if (transactions.length === 0) {
+                transactionList.innerHTML = `
+                    <li class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>Belum ada transaksi</p>
+                    </li>
+                `;
+                return;
+            }
+            
+            transactionList.innerHTML = '';
+            transactions.slice().reverse().forEach(transaction => {
+                const li = document.createElement('li');
+                li.className = 'transaction-item';
+                
+                li.innerHTML = `
+                    <div class="transaction-info">
+                        <span class="transaction-title">${transaction.description || (transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran')}</span>
+                        <span class="transaction-date">${formatDate(transaction.date)}</span>
+                    </div>
+                    <div class="transaction-amount ${transaction.type === 'income' ? 'income' : 'expense'}">
+                        ${transaction.type === 'income' ? '+' : '-'} ${formatRupiah(transaction.amount)}
+                    </div>
+                `;
+                
+                transactionList.appendChild(li);
+            });
+        }
+        
+        // Tambah transaksi
+        function addTransaction(type, amount, description) {
+            const transaction = {
+                type,
+                amount,
+                description: description || (type === 'income' ? 'Pemasukan' : 'Pengeluaran'),
+                date: new Date()
+            };
+            
+            transactions.push(transaction);
+            
+            if (type === 'income') {
+                balance += amount;
+            } else {
+                balance -= amount;
+            }
+            
+            updateBalance();
+            renderTransactions();
+            saveToLocalStorage();
+        }
+        
+        // Simpan ke localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('tabungan-riexx-balance', balance);
+            localStorage.setItem('tabungan-riexx-transactions', JSON.stringify(transactions));
+        }
+        
+        // Load dari localStorage
+        function loadFromLocalStorage() {
+            const savedBalance = localStorage.getItem('tabungan-riexx-balance');
+            const savedTransactions = localStorage.getItem('tabungan-riexx-transactions');
+            
+            if (savedBalance) {
+                balance = parseFloat(savedBalance);
+            }
+            
+            if (savedTransactions) {
+                transactions = JSON.parse(savedTransactions);
+                // Convert string dates back to Date objects
+                transactions.forEach(transaction => {
+                    transaction.date = new Date(transaction.date);
+                });
+            }
+            
+            updateBalance();
+            renderTransactions();
+        }
+        
+        // Event Listeners
+        incomeBtn.addEventListener('click', () => {
+            incomeModal.style.display = 'flex';
+            document.getElementById('income-amount').value = '';
+            document.getElementById('income-description').value = '';
+        });
+        
+        expenseBtn.addEventListener('click', () => {
+            expenseModal.style.display = 'flex';
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-description').value = '';
+        });
+        
+        closeIncome.addEventListener('click', () => {
+            incomeModal.style.display = 'none';
+        });
+        
+        closeExpense.addEventListener('click', () => {
+            expenseModal.style.display = 'none';
+        });
+        
+        incomeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('income-amount').value);
+            const description = document.getElementById('income-description').value;
+            
+            if (amount > 0) {
+                addTransaction('income', amount, description);
+                incomeModal.style.display = 'none';
+            }
+        });
+        
+        expenseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const description = document.getElementById('expense-description').value;
+            
+            if (amount > 0) {
+                if (amount <= balance) {
+                    addTransaction('expense', amount, description);
+                    expenseModal.style.display = 'none';
+                } else {
+                    alert('Saldo tidak mencukupi untuk pengeluaran ini!');
+                }
+            }
+        });
+        
+        // Tutup modal ketika klik di luar area konten
+        window.addEventListener('click', (e) => {
+            if (e.target === incomeModal) {
+                incomeModal.style.display = 'none';
+            }
+            if (e.target === expenseModal) {
+                expenseModal.style.display = 'none';
+            }
+        });
+        
+        // Load data dari localStorage saat pertama kali dibuka
+        loadFromLocalStorage();
+    </script>
+</body>
+</html>
